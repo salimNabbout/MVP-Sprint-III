@@ -1,0 +1,166 @@
+**********Quantidade de sorteios com apenas 1 ganhador de 6 acertos**********
+
+SELECT SUM(Ganhadores_6_acertos) AS Sorteios_com_1_Ganhador
+FROM Mega_csv
+WHERE Ganhadores_6_acertos = 1;
+
+
+
+
+
+
+
+**********Os 6 numeros mais sorteados**********
+
+SELECT Bola, COUNT(Bola) as Contagem
+FROM (
+    SELECT Bola1 AS Bola FROM Mega_csv UNION ALL
+    SELECT Bola2 AS Bola FROM Mega_csv UNION ALL
+    SELECT Bola3 AS Bola FROM Mega_csv UNION ALL
+    SELECT Bola4 AS Bola FROM Mega_csv UNION ALL
+    SELECT Bola5 AS Bola FROM Mega_csv UNION ALL
+    SELECT Bola6 AS Bola FROM Mega_csv
+)
+GROUP BY Bola
+ORDER BY Contagem DESC
+LIMIT 6;
+
+
+
+
+
+
+
+**********Quantidade de sorteios realizados**********
+
+SELECT COUNT(*) as Quantidade_Sorteios
+FROM Mega_csv;
+
+
+
+
+
+
+
+**********Total de ganhadores de 6 acertos**********
+
+SELECT SUM(Ganhadores_6_acertos) as Total_Ganhadores_6_Acertos
+FROM Mega_csv;
+
+
+
+
+
+
+
+**********5 Estados com mais ganhadores de 6 acertos**********
+
+SELECT SUBSTR(Cidade_UF, -2) as Estado, COUNT(*) as Contagem
+FROM Mega_csv
+WHERE Cidade_UF IS NOT NULL AND Cidade_UF != ''
+GROUP BY Estado
+ORDER BY Contagem DESC
+LIMIT 5;
+
+
+
+
+
+
+
+**********Maior premio pago para 6 acertos**********
+
+SELECT MAX(Rateio_6_acertos) AS Maior_Premio_6_Acertos
+FROM Mega_csv
+
+
+
+
+
+
+
+**********Total de ganhadores de 6,5 e 4 acertos por ano em ordem crescente de ganhadores**********
+
+SELECT CAST(SUBSTR(Data_do_Sorteio, 1, 4) AS INTEGER) AS Ano, 
+       SUM(COALESCE(Ganhadores_6_acertos, 0)) AS Total_Ganhadores_6_Acertos,
+       SUM(COALESCE(Ganhadores_5_acertos, 0)) AS Total_Ganhadores_5_Acertos,
+       SUM(COALESCE(Ganhadores_4_acertos, 0)) AS Total_Ganhadores_4_Acertos
+FROM Mega_csv
+GROUP BY Ano
+ORDER BY Total_Ganhadores_6_Acertos ASC;
+
+
+
+
+
+
+
+**********Ano com o menor número de ganhadores de 6 acertos**********
+
+
+SELECT Ano, Total_Ganhadores_6_Acertos
+FROM (
+    SELECT CAST(SUBSTR(Data_do_Sorteio, 1, 4) AS INTEGER) AS Ano, 
+           SUM(COALESCE(Ganhadores_6_acertos, 0)) AS Total_Ganhadores_6_Acertos
+    FROM Mega_csv
+    GROUP BY Ano
+    ORDER BY Total_Ganhadores_6_Acertos ASC
+)
+LIMIT 1;
+
+
+
+
+
+
+**********Algum jogo sorteado se repete?**********
+
+SELECT 
+    Bola1, Bola2, Bola3, Bola4, Bola5, Bola6, COUNT(*) as frequency
+FROM 
+    Mega_csv
+GROUP BY 
+    Bola1, Bola2, Bola3, Bola4, Bola5, Bola6
+HAVING 
+    frequency >= 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
